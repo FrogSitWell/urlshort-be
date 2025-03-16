@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rút gọn URL</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 50px;
+      }
+      input,
+      button {
+        padding: 10px;
+        margin: 10px;
+      }
+      #shortened-url {
+        margin-top: 20px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Nhập URL cần rút gọn</h2>
+    <input type="text" id="long-url" placeholder="Nhập URL dài..." />
+    <button onclick="shortenURL()">Rút gọn</button>
+
+    <h3>Kết quả:</h3>
+    <p id="shortened-url"></p>
+
+    <script>
+      async function shortenURL() {
+        const longURL = document.getElementById("long-url").value;
+        if (!longURL) {
+          alert("Vui lòng nhập URL!");
+          return;
+        }
+
+        const response = await fetch("http://localhost:3000/api/shorten", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ long_url: longURL }),
+        });
+
+        const data = await response.json();
+
+        if (data.short_url) {
+          document.getElementById("shortened-url").innerHTML = `
+                    URL rút gọn: <a href="${data.short_url}" target="_blank">${data.short_url}</a>
+                `;
+        } else {
+          alert("Lỗi khi rút gọn URL!");
+        }
+      }
+    </script>
+  </body>
+</html>
